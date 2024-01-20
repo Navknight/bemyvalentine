@@ -3,12 +3,12 @@ from schemas.proposals import ProposalsCreate
 from sqlalchemy.orm import Session
 
 
-def create_new_proposals(job: ProposalsCreate, db: Session, owner_id: int):
-    job_object = Proposals(**job.dict(), owner_id=owner_id)
-    db.add(job_object)
+def create_new_proposals(propsal: ProposalsCreate, db: Session, owner_id: int):
+    proposal_object = Proposals(**propsal.model_dump(), owner_id=owner_id)
+    db.add(proposal_object)
     db.commit()
-    db.refresh(job_object)
-    return job_object
+    db.refresh(proposal_object)
+    return proposal_object
 
 
 def retreive_proposal(id: int, db: Session):

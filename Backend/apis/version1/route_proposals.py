@@ -28,7 +28,7 @@ def create_proposal(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_from_token),
 ):
-    product = create_new_proposals(job=product, db=db, owner_id=current_user.id)
+    product = create_new_proposals(propsal=product, db=db, owner_id=current_user.id)
     return product
 
 

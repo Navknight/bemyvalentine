@@ -11,6 +11,4 @@ class User(Base):
     username = Column(String, unique=True, nullable=False)
     email = Column(String, nullable=False, unique=True, index=True)
     hashed_password = Column(String, nullable=False)
-    is_active = Column(Boolean(), default=True)
-    is_superuser = Column(Boolean(), default=False)
-    products = relationship("Proposals", back_populates="owner")
+    proposals = relationship("Proposals", back_populates="owner")
