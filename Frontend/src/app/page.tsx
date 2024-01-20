@@ -37,7 +37,7 @@ export default function Home() {
 			// localStorage.setItem('username', username);
 			console.log(access_token)
 			// console.log(username)
-			window.location.href = '/';
+			window.location.href = "http://localhost:3000/dashboard";
 		} catch (error) {
 			console.error(error);
 		}
@@ -51,7 +51,11 @@ export default function Home() {
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify(formDataSignIn)
+				body: new URLSearchParams({
+					username: formDataSignUp.username,
+					email: formDataSignUp.email,
+					password: formDataSignUp.password,
+				}),
 			});
 
 			if (response.ok) {
@@ -60,7 +64,7 @@ export default function Home() {
 				alert("Failed to sign up.");
 			}
 		} catch (error) {
-			// Handle network error
+			console.error(error);
 		}
 	};
 
@@ -69,6 +73,7 @@ export default function Home() {
 			...formDataSignUp,
 			[e.target.name]: e.target.value
 		});
+		console.log(formDataSignUp);
 	};
 
 	const handleChangeSignIn = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,15 +149,13 @@ export default function Home() {
 								type="email"
 								name="email"
 								placeholder="Enter your email"
-								value={formDataSignUp.email}
 								onChange={handleChangeSignUp}
 							/>
 							<input
 								className="h-10 rounded-sm bg-pink-100/50 px-2 text-pink-950 placeholder:text-pink-600/80 focus:outline-none focus:ring focus:ring-pink-400"
-								type="email"
-								name="email"
+								type="text"
+								name="username"
 								placeholder="Enter your username"
-								value={formDataSignUp.username}
 								onChange={handleChangeSignUp}
 							/>
 							<input
@@ -160,7 +163,6 @@ export default function Home() {
 								type="password"
 								name="password"
 								placeholder="Enter your password"
-								value={formDataSignUp.password}
 								onChange={handleChangeSignUp}
 							/>
 							<button
