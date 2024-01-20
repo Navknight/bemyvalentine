@@ -1,9 +1,6 @@
 fastapi
 uvicorn
-chromadb
 
-langchain
-openai
 
 #for template
 jinja2
