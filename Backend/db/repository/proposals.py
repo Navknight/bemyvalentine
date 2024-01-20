@@ -17,9 +17,9 @@ def retreive_proposal(id: int, db: Session):
 
 
 def delete_proposals_by_id(id: int, db: Session, owner_id):
-    existing_job = db.query(Proposals).filter(Proposals.id == id)
-    if not existing_job.first():
+    existing_proposal = db.query(Proposals).filter(Proposals.id == id)
+    if not existing_proposal.first():
         return 0
-    existing_job.delete(synchronize_session=False)
+    existing_proposal.delete(synchronize_session=False)
     db.commit()
     return 1
