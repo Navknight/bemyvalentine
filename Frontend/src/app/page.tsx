@@ -49,17 +49,13 @@ export default function Home() {
 			const response = await fetch('http://localhost:8000/users/signup', {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
 				},
-				body: new URLSearchParams({
-					username: formDataSignUp.username,
-					email: formDataSignUp.email,
-					password: formDataSignUp.password,
-				}),
+				body: JSON.stringify(formDataSignUp),
 			});
-
+	
 			if (response.ok) {
-				alert("Please check your email for verification link!");
+				alert("Please check your email for the verification link!");
 			} else {
 				alert("Failed to sign up.");
 			}
@@ -67,6 +63,7 @@ export default function Home() {
 			console.error(error);
 		}
 	};
+	
 
 	const handleChangeSignUp = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormDataSignUp({
