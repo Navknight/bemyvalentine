@@ -1,17 +1,22 @@
-'use client';
+'use client'
 import React, { useState } from 'react';
-
+import { useAccessToken } from '@/context/accessToken';
+import { useRouter } from 'next/navigation';
 export default function Home() {
-	const [signUp, setSignUp] = useState<boolean>(false);
-	const [formDataSignIn, setFormDataSignIn] = useState({
-		username: '',
-		password: ''
-	});
-	const [formDataSignUp, setFormDataSignUp] = useState({
-		username: '',
-		email: '',
-		password: '',
-	})
+	const router = useRouter();
+    const { accessToken, setAccessToken }: AccessContextType = useAccessToken();
+
+
+    const [signUp, setSignUp] = useState(false); // Corrected TypeScript syntax
+    const [formDataSignIn, setFormDataSignIn] = useState({
+        username: '',
+        password: ''
+    });
+    const [formDataSignUp, setFormDataSignUp] = useState({
+        username: '',
+        email: '',
+        password: '',
+    });
 
 	const handleSignIn = async () => {
 		try {
@@ -33,11 +38,13 @@ export default function Home() {
 				throw new Error('Login failed');
 			}
 			const { access_token } = await response.json();
-			localStorage.setItem('accessToken', access_token);
+			// localStorage.setItem('accessToken', access_token);
+			setAccessToken(access_token);
 			// localStorage.setItem('username', username);
-			console.log(access_token)
+			console.log(access_token);
 			// console.log(username)
-			window.location.href = "http://localhost:3000/dashboard";
+			// window.location.href = "http://localhost:3000/dashboard";
+			router.push('/dashboard');
 		} catch (error) {
 			console.error(error);
 		}

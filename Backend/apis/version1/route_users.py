@@ -20,11 +20,9 @@ URL = "http://localhost:5173"
 otp_list = {}
 
 # @router.on_event('startup')
-# @repeat_every(seconds=3600)
+# @repeat_every(seconds=10)
 # async def clean_otp():
-#     for i in otp_list:
-#         if datetime.datetime.now() > otp_list[i][2]:
-#             del otp_list[i]
+#     print("hi")
 
 @router.get("/verify/{email}/{code}" , response_model=ShowUser)
 def verify(code: int, email: str, db: Session = Depends(get_db)):

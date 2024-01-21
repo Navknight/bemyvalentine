@@ -2,11 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { useAccessToken } from "@/context/accessToken";
 
 export default function Dashboard() {
-    let access_token = typeof window !== 'undefined' ? localStorage.getItem("access_token") : null;
+    const { accessToken, setAccessToken }: AccessContextType = useAccessToken();
+    console.log("accessToken: " + accessToken);
     useEffect(() => {
-        console.log("at" + access_token);
+        console.log("at" + accessToken);
     }, []);
     
     const [formData, setFormData] = useState({
@@ -26,7 +28,7 @@ export default function Dashboard() {
             const response = await fetch("http://localhost:8000/proposal/create-proposal", {
                 method: "POST",
                 headers: {
-                    'Authorization': `${access_token}`,
+                    'Authorization': `Bearer ${accessToken}`,
                     'accept': 'application/json',
                 },
                 body: JSON.stringify(formData)
@@ -42,7 +44,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         setLink(link + id);
-    }, [id, link])
+    }, [id])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,7 +52,7 @@ export default function Dashboard() {
                 const response = await fetch('http://localhost:8000/proposal/profile', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `${access_token}`,
+                        'Authorization': `Bearer ${accessToken}`,
                         'accept': 'application/json'
                     }
                 });
@@ -64,11 +66,11 @@ export default function Dashboard() {
             }
         };
 
-        if (access_token) {
-            console.log("access_token load: " + access_token);
+        if (accessToken) {
+            console.log("access_token load: " + accessToken);
             fetchData();
         }
-    }, [access_token]);
+    }, [accessToken]);
 
 
     const handleCopy = () => {
