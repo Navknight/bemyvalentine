@@ -55,9 +55,10 @@ export default function Home() {
 	};
 
 	return (
-		<div className='w-screen h-screen bg-pink-500'>
-			<div className="absolute top-1/2 left-1/2 -transform-x-1/2 -transform-y-1/2 flex items-center justify-center space-x-2">
-				<p>{name}, {message}</p>
+		<div className='w-screen h-screen bg-pink-500 flex items-center justify-center'>
+			<div className="flex flex-col items-center space-y-2">
+				<img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDdtZ2JiZDR0a3lvMWF4OG8yc3p6Ymdvd3g2d245amdveDhyYmx6eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" />
+				<p className='font-bold text-xl text-white'>{name}, {message}</p>
 				<Button onClick={handleYesClick}>YES!</Button>
 				<Button onMouseEnter={handleNoHover}>No</Button>
 			</div>
