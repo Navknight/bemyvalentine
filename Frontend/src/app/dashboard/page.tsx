@@ -1,21 +1,80 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-
-    let proposals = [
-        {
-            name: "Mia",
-            message: "Loveeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee you Mia",
-            status: "Pending"
-        },
-        {
-            name: "Lana",
-            message: "Love you Lana",
-            status: "Accepted"
+    let access_token = typeof window !== 'undefined' ? localStorage.getItem("access_token") : null;
+    useEffect(() => {
+        console.log("at" + access_token);
+    }, []);
+    
+    const [formData, setFormData] = useState({
+        by: '',
+        to: '',
+        message: '',
+    })
+    const [id, setId] = useState(0);
+    const [link, setLink] = useState('http://localhost:3000/proposals/')
+    const [proposals, setProposals] = useState([{
+        name: '',
+        message: '',
+        status: ''
+    }])
+    const handleSubmit = async () => {
+        try {
+            const response = await fetch("http://localhost:8000/proposal/create-proposal", {
+                method: "POST",
+                headers: {
+                    'Authorization': `${access_token}`,
+                    'accept': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            if (response.ok) {
+                const data = await response.json();
+                setId(data.owner_id);
+            }
+        } catch (error) {
+            console.log(error);
         }
-    ]
+    }
+
+    useEffect(() => {
+        setLink(link + id);
+    }, [id, link])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/proposal/profile', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `${access_token}`,
+                        'accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setProposals(prevProposals => [...prevProposals, ...data.proposals]);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        if (access_token) {
+            console.log("access_token load: " + access_token);
+            fetchData();
+        }
+    }, [access_token]);
+
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(link);
+    }
+
 
     return (
         <div className="flex min-h-screen">
@@ -28,7 +87,7 @@ export default function Dashboard() {
                     <form className="grid gap-5">
                         <input className="h-10 rounded-sm bg-pink-100/50 px-2 text-pink-950 placeholder:text-pink-600/80 focus:outline-none focus:ring focus:ring-pink-400" type="text" placeholder="Enter Their Name" />
                         <textarea className="h-40 rounded-sm bg-pink-100/50 px-2 text-pink-950 placeholder:text-pink-600/80 focus:outline-none focus:ring focus:ring-pink-400" placeholder="Enter A Loving Message" />
-                        <button className="flex h-10 items-center justify-between rounded-sm bg-pink-700 px-2 text-pink-100 transition-colors duration-300 hover:bg-pink-800 focus:outline-none focus:ring focus:ring-pink-400" type="button">
+                        <button onClick={handleSubmit} className="flex h-10 items-center justify-between rounded-sm bg-pink-700 px-2 text-pink-100 transition-colors duration-300 hover:bg-pink-800 focus:outline-none focus:ring focus:ring-pink-400" type="button">
                             <span>Create</span>
                             <span>
                                 <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="h-6 w-6">
@@ -36,6 +95,14 @@ export default function Dashboard() {
                                 </svg>
                             </span>
                         </button>
+                        {id ? (<button onClick={handleCopy} className="flex h-10 items-center justify-between rounded-sm bg-pink-700 px-2 text-pink-100 transition-colors duration-300 hover:bg-pink-800 focus:outline-none focus:ring focus:ring-pink-400" type="button">
+                            <span>Copy the link</span>
+                            <span>
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="h-6 w-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                            </span>
+                        </button>) : (<></>)}
                     </form>
                 </div>
 
@@ -45,10 +112,10 @@ export default function Dashboard() {
             <div className="right-half min-w-[50vw] bg-pink-500 p-4">
                 <center>
                     <div className="w-96 justify-content-center flex-col space-y-5">
-                        {proposals.map((proposal, index) => (
-                            <div key={index} className="shadow-lg w-full py-4 px-4 flex items-center space-x-4 bg-pink-300 rounded-md justify-center"> 
+                        {proposals.length > 1 && proposals.map((proposal, index) => (
+                            <div key={index} className="shadow-lg w-full py-4 px-4 flex items-center space-x-4 bg-pink-300 rounded-md justify-center">
                                 <div className="flex flex-col">
-                                    <span className="font-bold text-center mb-2px">{proposal.name}</span> 
+                                    <span className="font-bold text-center mb-2px">{proposal.name}</span>
                                     <span className="text-sm text-center mb-10px">
                                         {proposal.message.length > 30 ? (
                                             <>
@@ -59,7 +126,7 @@ export default function Dashboard() {
                                             proposal.message
                                         )}
                                     </span>
-                                    {proposal.status === "Pending" ? (<center><Button className="max-w-80" variant={"destructive"}>Delete</Button></center>) : (<span className="font-bold text-center">She Accepted!!</span>)}
+                                    {proposal.status === "Accepted" ? (<center><Button className="max-w-80" variant={"destructive"}>Delete</Button></center>) : (<span className="font-bold text-center">She Accepted!!</span>)}
                                 </div>
                             </div>
                         ))}
